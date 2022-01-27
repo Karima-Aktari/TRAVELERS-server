@@ -57,11 +57,11 @@ async function run() {
             console.log(result);
             res.send('result');
         })
-        //GET WinterCollections API
-        app.get('/winter', async (req, res) => {
-            const cursor = winterCollection.find({});
-            const winter = await cursor.toArray();
-            res.send(winter);
+        //GET BlogCollections API
+        app.get('/addBlog', async (req, res) => {
+            const cursor = blogCollection.find({});
+            const blogs = await cursor.toArray();
+            res.send(blogs);
         })
 
         //POST users to database

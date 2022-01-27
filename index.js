@@ -23,13 +23,45 @@ async function run() {
         const database = client.db('travelersBlog');
         const spotCollection = database.collection('spots');
         const usersCollection = database.collection('users');
-        // console.log(spotCollection);
+        const userExperienceCollection = database.collection('userExperience');
+        const blogCollection = database.collection('blogs');
 
         //Get SpotCollections API
         app.get('/spots', async (req, res) => {
             const cursor = spotCollection.find({});
             const spots = await cursor.toArray();
             res.send(spots);
+        })
+
+        //POST UserExperience API
+        app.post('/userExperience', async (req, res) => {
+            const userExperience = req.body;
+            console.log(userExperience);
+            const result = await userExperienceCollection.insertOne(userExperience);
+            res.json(result);
+            console.log(result);
+        })
+
+        //GET Experience API
+        app.get('/userExperience', async (req, res) => {
+            const cursor = userExperienceCollection.find({});
+            const experience = await cursor.toArray();
+            res.send(experience);
+        })
+
+        //POST admin Blog API
+        app.post('/addBlog', async (req, res) => {
+            const blog = req.body;
+            console.log(blog);
+            const result = await blogCollection.insertOne(blog);
+            console.log(result);
+            res.send('result');
+        })
+        //GET WinterCollections API
+        app.get('/winter', async (req, res) => {
+            const cursor = winterCollection.find({});
+            const winter = await cursor.toArray();
+            res.send(winter);
         })
 
         //POST users to database

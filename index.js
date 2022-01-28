@@ -57,12 +57,32 @@ async function run() {
             res.json(userExperience);
         })
 
+        // Update UserExperience
+        app.put("/userExperience/:id", async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    status: "Approved"
+                },
+            };
+            const result = await userExperienceCollection.updateOne(filter, updateDoc, options);
+            res.json(result)
+        });
+        //Delete UserExperience
+        app.delete('/deleteExperience/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) }
+            const userExperience = await userExperienceCollection.deleteOne(query);
+            res.json(userExperience);
+        })
+
         //POST admin Blog API
         app.post('/addBlog', async (req, res) => {
             const blog = req.body;
             console.log(blog);
             const result = await blogCollection.insertOne(blog);
-            console.log(result);
             res.send('result');
         })
         //GET BlogCollections API
@@ -78,12 +98,19 @@ async function run() {
             const adminBlog = await blogCollection.findOne(query);
             res.json(adminBlog);
         })
+
+        //Delete UserExperience
+        app.delete('/deleteBlog/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) }
+            const adminBlog = await blogCollection.deleteOne(query);
+            res.json(adminBlog);
+        })
+
         //POST users to database
         app.post('/users', async (req, res) => {
             const user = req.body;
-            console.log(user);
             const result = await usersCollection.insertOne(user);
-            console.log(result);
             res.json(result);
         })
 
@@ -106,7 +133,30 @@ async function run() {
             res.json(result);
         });
 
+        //User set Role-Admin
+        app.get('/users/:email', async (req, res) => {
+            const email = req.params.email;
+
+            if (email) {
+                const query = { email: email };
+                const user = await usersCollection.findOne(query);
+                let isAdmin = false;
+                if (user) {
+                    if (user.role === 'admin') {
+                        isAdmin = true;
+                    }
+                    res.json({ admin: isAdmin })
+                } else {
+                    res.json({ admin: isAdmin })
+                }
+            } else {
+                res.json({ admin: false })
+            }
+        })
+
     }
+
+
     finally {
         // await client.close();
     }

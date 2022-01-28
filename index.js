@@ -1,6 +1,6 @@
 const express = require('express');
 const { MongoClient } = require('mongodb');
-// const ObjectId = require('mongodb').ObjectId;
+const ObjectId = require('mongodb').ObjectId;
 
 const cors = require('cors');
 require('dotenv').config();
@@ -49,6 +49,14 @@ async function run() {
             res.send(experience);
         })
 
+        //GET Single experience BY ID
+        app.get('/userExperience/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const userExperience = await userExperienceCollection.findOne(query);
+            res.json(userExperience);
+        })
+
         //POST admin Blog API
         app.post('/addBlog', async (req, res) => {
             const blog = req.body;
@@ -63,7 +71,13 @@ async function run() {
             const blogs = await cursor.toArray();
             res.send(blogs);
         })
-
+        //GET single Blog API
+        app.get('/addBlog/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const adminBlog = await blogCollection.findOne(query);
+            res.json(adminBlog);
+        })
         //POST users to database
         app.post('/users', async (req, res) => {
             const user = req.body;
